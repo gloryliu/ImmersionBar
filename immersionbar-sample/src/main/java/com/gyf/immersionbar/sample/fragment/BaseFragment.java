@@ -8,6 +8,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.appcompat.widget.Toolbar;
+import androidx.viewbinding.ViewBinding;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,8 +17,6 @@ import android.view.ViewGroup;
 import com.gyf.immersionbar.ImmersionBar;
 import com.gyf.immersionbar.sample.R;
 
-import butterknife.ButterKnife;
-import butterknife.Unbinder;
 
 /**
  * 没有使用沉浸式的Fragment基类
@@ -24,11 +24,11 @@ import butterknife.Unbinder;
  * @author geyifeng
  * @date 2017/4/7
  */
-public abstract class BaseFragment extends Fragment {
+public abstract class BaseFragment<VB extends ViewBinding> extends Fragment {
 
     protected String mTag = this.getClass().getSimpleName();
 
-    private Unbinder unbinder;
+    protected VB mBinding;
     protected Activity mActivity;
     protected View mRootView;
     protected Toolbar toolbar;
@@ -50,7 +50,10 @@ public abstract class BaseFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         if (mRootView == null) {
-            mRootView = inflater.inflate(getLayoutId(), container, false);
+            mBinding = createViewBinding();
+            if (mBinding != null) {
+                mRootView = mBinding.getRoot();
+            }
         } else {
             ViewGroup viewGroup = (ViewGroup) mRootView.getParent();
             if (viewGroup != null) {
@@ -63,7 +66,6 @@ public abstract class BaseFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        unbinder = ButterKnife.bind(this, view);
         statusBarView = view.findViewById(R.id.status_bar_view);
         toolbar = view.findViewById(R.id.toolbar);
         fitsLayoutOverlap();
@@ -75,7 +77,6 @@ public abstract class BaseFragment extends Fragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        unbinder.unbind();
     }
 
     @Override
@@ -90,11 +91,11 @@ public abstract class BaseFragment extends Fragment {
     }
 
     /**
-     * Gets layout id.
+     * 子类设置布局Id
      *
      * @return the layout id
      */
-    protected abstract int getLayoutId();
+    protected abstract VB createViewBinding();
 
     /**
      * 初始化数据

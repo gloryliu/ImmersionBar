@@ -6,23 +6,18 @@ import android.widget.TextView;
 
 import com.gyf.immersionbar.ImmersionBar;
 import com.gyf.immersionbar.sample.R;
+import com.gyf.immersionbar.sample.databinding.ActivityOver6Binding;
 
-import butterknife.BindView;
 
 /**
  * @author geyifeng
  * @date 2017/5/8
  */
-public class Over6Activity extends BaseActivity {
-
-    @BindView(R.id.text)
-    TextView textView;
-    @BindView(R.id.toolbar)
-    Toolbar toolbar;
+public class Over6Activity extends BaseActivity<ActivityOver6Binding> {
 
     @Override
-    protected int getLayoutId() {
-        return R.layout.activity_over6;
+    protected ActivityOver6Binding createViewBinding() {
+        return ActivityOver6Binding.inflate(getLayoutInflater());
     }
 
     @Override
@@ -42,7 +37,7 @@ public class Over6Activity extends BaseActivity {
     @SuppressLint("SetTextI18n")
     @Override
     protected void initView() {
-        textView.setText("不需要在xml文件增加view给状态栏预留空间，重点是这个方法titleBarMarginTop(toolbar)，实现原理：" +
+        mBinding.text.setText("不需要在xml文件增加view给状态栏预留空间，重点是这个方法titleBarMarginTop(toolbar)，实现原理：" +
                 "根据状态栏高度动态设置标题栏（demo是ToolBar，也可以是其他的）高度，" +
                 "设置标题栏距离顶部MarginTop值的为状态栏的高度，然后在指定状态栏的颜色即可！");
     }

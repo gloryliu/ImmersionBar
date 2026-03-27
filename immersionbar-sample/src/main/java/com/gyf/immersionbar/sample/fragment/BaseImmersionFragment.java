@@ -7,6 +7,8 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
+import androidx.viewbinding.ViewBinding;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,20 +17,17 @@ import com.gyf.immersionbar.ImmersionBar;
 import com.gyf.immersionbar.components.SimpleImmersionFragment;
 import com.gyf.immersionbar.sample.R;
 
-import butterknife.ButterKnife;
-import butterknife.Unbinder;
-
 /**
  * 可以使用沉浸式的Fragment基类
  *
  * @author geyifeng
  * @date 2017/4/7
  */
-public abstract class BaseImmersionFragment extends SimpleImmersionFragment {
+public abstract class BaseImmersionFragment<VB extends ViewBinding> extends SimpleImmersionFragment {
 
     protected String mTag = this.getClass().getSimpleName();
 
-    private Unbinder unbinder;
+    protected VB mBinding;
     protected Activity mActivity;
     protected View mRootView;
     protected Toolbar toolbar;
@@ -50,7 +49,10 @@ public abstract class BaseImmersionFragment extends SimpleImmersionFragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         if (mRootView == null) {
-            mRootView = inflater.inflate(getLayoutId(), container, false);
+            mBinding = createViewBinding();
+            if (mBinding != null) {
+                mRootView = mBinding.getRoot();
+            }
         } else {
             ViewGroup viewGroup = (ViewGroup) mRootView.getParent();
             if (viewGroup != null) {
@@ -63,7 +65,6 @@ public abstract class BaseImmersionFragment extends SimpleImmersionFragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        unbinder = ButterKnife.bind(this, view);
         statusBarView = view.findViewById(R.id.status_bar_view);
         toolbar = view.findViewById(R.id.toolbar);
         fitsLayoutOverlap();
@@ -75,7 +76,6 @@ public abstract class BaseImmersionFragment extends SimpleImmersionFragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        unbinder.unbind();
     }
 
     @Override
@@ -94,7 +94,7 @@ public abstract class BaseImmersionFragment extends SimpleImmersionFragment {
      *
      * @return the layout id
      */
-    protected abstract int getLayoutId();
+    protected abstract VB createViewBinding();
 
 
     @Override

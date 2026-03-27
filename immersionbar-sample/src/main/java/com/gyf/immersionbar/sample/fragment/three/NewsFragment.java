@@ -2,21 +2,14 @@ package com.gyf.immersionbar.sample.fragment.three;
 
 import android.os.Bundle;
 import androidx.annotation.Nullable;
-import android.widget.TextView;
-
-import com.gyf.immersionbar.sample.R;
+import com.gyf.immersionbar.sample.databinding.FragmentNewsBinding;
 import com.gyf.immersionbar.sample.fragment.BaseFragment;
-
-import butterknife.BindView;
 
 /**
  * @author geyifeng
  * @date 2019-05-05 17:35
  */
-public class NewsFragment extends BaseFragment {
-
-    @BindView(R.id.tv_content)
-    TextView tvContent;
+public class NewsFragment extends BaseFragment<FragmentNewsBinding> {
 
     private String mTitle = "";
 
@@ -39,13 +32,13 @@ public class NewsFragment extends BaseFragment {
     }
 
     @Override
-    protected int getLayoutId() {
-        return R.layout.fragment_news;
+    protected FragmentNewsBinding createViewBinding() {
+        return FragmentNewsBinding.inflate(getLayoutInflater());
     }
 
     @Override
     protected void initView() {
         super.initView();
-        tvContent.setText(mTitle);
+        mBinding.tvContent.setText(mTitle);
     }
 }

@@ -4,23 +4,19 @@ import android.os.Bundle;
 
 import com.gyf.immersionbar.ImmersionBar;
 import com.gyf.immersionbar.sample.R;
+import com.gyf.immersionbar.sample.databinding.FragmentTwoServiceBinding;
 
 /**
  * @author geyifeng
  * @date 2017/7/20
  */
-public class ServiceFiveFragment extends BaseFiveFragment {
+public class ServiceFiveFragment extends BaseFiveFragment<FragmentTwoServiceBinding> {
 
     public static ServiceFiveFragment newInstance() {
         Bundle args = new Bundle();
         ServiceFiveFragment fragment = new ServiceFiveFragment();
         fragment.setArguments(args);
         return fragment;
-    }
-
-    @Override
-    protected int getLayoutId() {
-        return R.layout.fragment_two_service;
     }
 
     @Override
@@ -32,5 +28,10 @@ public class ServiceFiveFragment extends BaseFiveFragment {
                 .statusBarDarkFont(true, 0.2f)
                 .navigationBarDarkIcon(true)
                 .init();
+    }
+
+    @Override
+    protected FragmentTwoServiceBinding createViewBinding() {
+        return FragmentTwoServiceBinding.inflate(getLayoutInflater());
     }
 }

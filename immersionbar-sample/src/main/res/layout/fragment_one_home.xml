@@ -20,5 +20,7 @@
 
     </com.lcodecore.tkrefreshlayout.TwinklingRefreshLayout>
 
-    <include layout="@layout/title_bar_one" />
+    <include
+        android:id="@+id/titleBarOne"
+        layout="@layout/title_bar_one" />
 </FrameLayout>

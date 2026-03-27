@@ -1,26 +1,21 @@
 package com.gyf.immersionbar.sample.activity;
 
 import android.annotation.SuppressLint;
-import android.widget.TextView;
 
 import com.gyf.immersionbar.ImmersionBar;
 import com.gyf.immersionbar.sample.R;
-
-import butterknife.BindView;
+import com.gyf.immersionbar.sample.databinding.ActivityOver2Binding;
 
 /**
  * @author geyifeng
  * @date 2017/5/8
  */
 
-public class Over2Activity extends BaseActivity {
-
-    @BindView(R.id.text)
-    TextView textView;
+public class Over2Activity extends BaseActivity<ActivityOver2Binding> {
 
     @Override
-    protected int getLayoutId() {
-        return R.layout.activity_over2;
+    protected ActivityOver2Binding createViewBinding() {
+        return ActivityOver2Binding.inflate(getLayoutInflater());
     }
 
     @Override
@@ -33,7 +28,7 @@ public class Over2Activity extends BaseActivity {
     @Override
     protected void initView() {
         super.initView();
-        textView.setText("使用系统的fitsSystemWindows属性,在布局的根节点，" +
+        mBinding.text.setText("使用系统的fitsSystemWindows属性,在布局的根节点，" +
                 "指定fitsSystemWindows为true，然后在代码中使用ImmersionBar指定状态栏的颜色，详情参看此页面的实现");
     }
 }

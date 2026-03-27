@@ -1,16 +1,17 @@
 package com.gyf.immersionbar.sample.activity;
 
 import com.gyf.immersionbar.ImmersionBar;
-import com.gyf.immersionbar.sample.R;
+import com.gyf.immersionbar.sample.databinding.ActivityAssetsBinding;
 
 /**
  * @author geyifeng
  * @date 2019/3/25 2:47 PM
  */
-public class AssetsActivity extends BaseActivity {
+public class AssetsActivity extends BaseActivity<ActivityAssetsBinding> {
+
     @Override
-    protected int getLayoutId() {
-        return R.layout.activity_assets;
+    protected ActivityAssetsBinding createViewBinding() {
+        return ActivityAssetsBinding.inflate(getLayoutInflater());
     }
 
     @Override

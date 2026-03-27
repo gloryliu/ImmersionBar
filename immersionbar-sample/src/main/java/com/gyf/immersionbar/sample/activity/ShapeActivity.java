@@ -2,16 +2,18 @@ package com.gyf.immersionbar.sample.activity;
 
 import com.gyf.immersionbar.ImmersionBar;
 import com.gyf.immersionbar.sample.R;
+import com.gyf.immersionbar.sample.databinding.ActivityShapeBinding;
 
 /**
  * @author geyifeng
  * @date 2017/6/6
  */
-public class ShapeActivity extends BaseActivity {
+public class ShapeActivity extends BaseActivity<ActivityShapeBinding> {
+
 
     @Override
-    protected int getLayoutId() {
-        return R.layout.activity_shape;
+    protected ActivityShapeBinding createViewBinding() {
+        return ActivityShapeBinding.inflate(getLayoutInflater());
     }
 
     @Override

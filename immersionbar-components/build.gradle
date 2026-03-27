@@ -1,11 +1,12 @@
 apply plugin: 'com.android.library'
 
 android {
-    compileSdkVersion 31
+    namespace 'com.gyf.immersionbar.components'
+    compileSdk 35
 
     defaultConfig {
-        minSdkVersion 14
-        targetSdkVersion 31
+        minSdk 26
+        targetSdk 35
     }
 
     buildTypes {

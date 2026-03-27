@@ -9,37 +9,27 @@ import android.widget.LinearLayout;
 
 import com.gyf.immersionbar.ImmersionBar;
 import com.gyf.immersionbar.sample.R;
+import com.gyf.immersionbar.sample.databinding.ActivityFragmentOneBinding;
 import com.gyf.immersionbar.sample.fragment.three.CategoryThreeFragment;
 import com.gyf.immersionbar.sample.fragment.three.HomeThreeFragment;
 import com.gyf.immersionbar.sample.fragment.three.MineThreeFragment;
 import com.gyf.immersionbar.sample.fragment.three.ServiceThreeFragment;
-import com.gyf.immersionbar.sample.view.CustomViewPager;
 
 import java.util.ArrayList;
 
-import butterknife.BindView;
 
 /**
  * @author geyifeng
  * @date 2017/5/8
  */
-public class FragmentThreeActivity extends BaseActivity implements View.OnClickListener, ViewPager.OnPageChangeListener {
+public class FragmentThreeActivity extends BaseActivity<ActivityFragmentOneBinding> implements View.OnClickListener, ViewPager.OnPageChangeListener {
 
-    @BindView(R.id.viewPager)
-    CustomViewPager viewPager;
-    @BindView(R.id.ll_home)
-    LinearLayout llHome;
-    @BindView(R.id.ll_category)
-    LinearLayout llCategory;
-    @BindView(R.id.ll_service)
-    LinearLayout llService;
-    @BindView(R.id.ll_mine)
-    LinearLayout llMine;
     private ArrayList<Fragment> mFragments;
 
+
     @Override
-    protected int getLayoutId() {
-        return R.layout.activity_fragment_one;
+    protected ActivityFragmentOneBinding createViewBinding() {
+        return ActivityFragmentOneBinding.inflate(getLayoutInflater());
     }
 
     @Override
@@ -63,41 +53,35 @@ public class FragmentThreeActivity extends BaseActivity implements View.OnClickL
 
     @Override
     protected void initView() {
-        viewPager.setAdapter(new MyAdapter(getSupportFragmentManager()));
-        viewPager.setOffscreenPageLimit(3);
-        llHome.setSelected(true);
+        mBinding.viewPager.setAdapter(new MyAdapter(getSupportFragmentManager()));
+        mBinding.viewPager.setOffscreenPageLimit(3);
+        mBinding.tabBottomContainer.llHome.setSelected(true);
     }
 
     @Override
     protected void setListener() {
-        llHome.setOnClickListener(this);
-        llCategory.setOnClickListener(this);
-        llService.setOnClickListener(this);
-        llMine.setOnClickListener(this);
-        viewPager.addOnPageChangeListener(this);
+        mBinding.tabBottomContainer.llHome.setOnClickListener(this);
+        mBinding.tabBottomContainer.llCategory.setOnClickListener(this);
+        mBinding.tabBottomContainer.llService.setOnClickListener(this);
+        mBinding.tabBottomContainer.llMine.setOnClickListener(this);
+        mBinding.viewPager.addOnPageChangeListener(this);
     }
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.ll_home:
-                viewPager.setCurrentItem(0);
-                tabSelected(llHome);
-                break;
-            case R.id.ll_category:
-                viewPager.setCurrentItem(1);
-                tabSelected(llCategory);
-                break;
-            case R.id.ll_service:
-                viewPager.setCurrentItem(2);
-                tabSelected(llService);
-                break;
-            case R.id.ll_mine:
-                viewPager.setCurrentItem(3);
-                tabSelected(llMine);
-                break;
-            default:
-                break;
+        int viewId = v.getId();
+        if (viewId == R.id.ll_home) {
+            mBinding.viewPager.setCurrentItem(0);
+            tabSelected(mBinding.tabBottomContainer.llHome);
+        } else if (viewId == R.id.ll_category) {
+            mBinding.viewPager.setCurrentItem(1);
+            tabSelected(mBinding.tabBottomContainer.llCategory);
+        } else if (viewId == R.id.ll_service) {
+            mBinding.viewPager.setCurrentItem(2);
+            tabSelected(mBinding.tabBottomContainer.llService);
+        } else if (viewId == R.id.ll_mine) {
+            mBinding.viewPager.setCurrentItem(3);
+            tabSelected(mBinding.tabBottomContainer.llMine);
         }
     }
 
@@ -110,19 +94,19 @@ public class FragmentThreeActivity extends BaseActivity implements View.OnClickL
     public void onPageSelected(int position) {
         switch (position) {
             case 0:
-                tabSelected(llHome);
+                tabSelected(mBinding.tabBottomContainer.llHome);
                 ImmersionBar.with(this).keyboardEnable(false).statusBarDarkFont(false).navigationBarColor(R.color.colorPrimary).init();
                 break;
             case 1:
-                tabSelected(llCategory);
+                tabSelected(mBinding.tabBottomContainer.llCategory);
                 ImmersionBar.with(this).keyboardEnable(false).statusBarDarkFont(true, 0.2f).navigationBarColor(R.color.btn3).init();
                 break;
             case 2:
-                tabSelected(llService);
+                tabSelected(mBinding.tabBottomContainer.llService);
                 ImmersionBar.with(this).keyboardEnable(false).statusBarDarkFont(false).navigationBarColor(R.color.btn13).init();
                 break;
             case 3:
-                tabSelected(llMine);
+                tabSelected(mBinding.tabBottomContainer.llMine);
                 ImmersionBar.with(this).keyboardEnable(true).statusBarDarkFont(true).navigationBarColor(R.color.btn1).init();
                 break;
             default:
@@ -136,10 +120,10 @@ public class FragmentThreeActivity extends BaseActivity implements View.OnClickL
     }
 
     private void tabSelected(LinearLayout linearLayout) {
-        llHome.setSelected(false);
-        llCategory.setSelected(false);
-        llService.setSelected(false);
-        llMine.setSelected(false);
+        mBinding.tabBottomContainer.llHome.setSelected(false);
+        mBinding.tabBottomContainer.llCategory.setSelected(false);
+        mBinding.tabBottomContainer.llService.setSelected(false);
+        mBinding.tabBottomContainer.llMine.setSelected(false);
         linearLayout.setSelected(true);
     }
 

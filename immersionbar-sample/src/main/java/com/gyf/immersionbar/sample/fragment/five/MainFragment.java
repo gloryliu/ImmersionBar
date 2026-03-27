@@ -7,24 +7,15 @@ import android.widget.LinearLayout;
 
 
 import com.gyf.immersionbar.sample.R;
+import com.gyf.immersionbar.sample.databinding.ActivityFragmentTwoBinding;
 
-import butterknife.BindView;
 import me.yokeyword.fragmentation.SupportFragment;
 
 /**
  * @author geyifeng
  * @date 2017/8/12
  */
-public class MainFragment extends BaseFiveFragment implements View.OnClickListener {
-
-    @BindView(R.id.ll_home)
-    LinearLayout llHome;
-    @BindView(R.id.ll_category)
-    LinearLayout llCategory;
-    @BindView(R.id.ll_service)
-    LinearLayout llService;
-    @BindView(R.id.ll_mine)
-    LinearLayout llMine;
+public class MainFragment extends BaseFiveFragment<ActivityFragmentTwoBinding> implements View.OnClickListener {
 
     private SupportFragment[] mFragments = new SupportFragment[4];
 
@@ -38,11 +29,6 @@ public class MainFragment extends BaseFiveFragment implements View.OnClickListen
         MainFragment fragment = new MainFragment();
         fragment.setArguments(args);
         return fragment;
-    }
-
-    @Override
-    protected int getLayoutId() {
-        return R.layout.activity_fragment_two;
     }
 
     @Override
@@ -71,47 +57,46 @@ public class MainFragment extends BaseFiveFragment implements View.OnClickListen
     }
 
     @Override
+    protected ActivityFragmentTwoBinding createViewBinding() {
+        return ActivityFragmentTwoBinding.inflate(getLayoutInflater());
+    }
+
+    @Override
     protected void initView() {
-        tabSelected(llHome);
+        tabSelected(mBinding.tabBottomContainer.llHome);
     }
 
     @Override
     protected void setListener() {
-        llHome.setOnClickListener(this);
-        llCategory.setOnClickListener(this);
-        llService.setOnClickListener(this);
-        llMine.setOnClickListener(this);
+        mBinding.tabBottomContainer.llHome.setOnClickListener(this);
+        mBinding.tabBottomContainer.llCategory.setOnClickListener(this);
+        mBinding.tabBottomContainer.llService.setOnClickListener(this);
+        mBinding.tabBottomContainer.llMine.setOnClickListener(this);
     }
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.ll_home:
-                showHideFragment(mFragments[HOME]);
-                tabSelected(llHome);
-                break;
-            case R.id.ll_category:
-                showHideFragment(mFragments[CATEGORY]);
-                tabSelected(llCategory);
-                break;
-            case R.id.ll_service:
-                showHideFragment(mFragments[SERVICE]);
-                tabSelected(llService);
-                break;
-            case R.id.ll_mine:
-                showHideFragment(mFragments[MINE]);
-                tabSelected(llMine);
-                break;
-            default:
-                break;
+        int viewId = v.getId();
+        if (viewId == R.id.ll_home) {
+            showHideFragment(mFragments[HOME]);
+            tabSelected(mBinding.tabBottomContainer.llHome);
+        } else if (viewId == R.id.ll_category) {
+            showHideFragment(mFragments[CATEGORY]);
+            tabSelected(mBinding.tabBottomContainer.llCategory);
+        } else if (viewId == R.id.ll_service) {
+            showHideFragment(mFragments[SERVICE]);
+            tabSelected(mBinding.tabBottomContainer.llService);
+        } else if (viewId == R.id.ll_mine) {
+            showHideFragment(mFragments[MINE]);
+            tabSelected(mBinding.tabBottomContainer.llMine);
         }
     }
 
     private void tabSelected(LinearLayout linearLayout) {
-        llHome.setSelected(false);
-        llCategory.setSelected(false);
-        llService.setSelected(false);
-        llMine.setSelected(false);
+        mBinding.tabBottomContainer.llHome.setSelected(false);
+        mBinding.tabBottomContainer.llCategory.setSelected(false);
+        mBinding.tabBottomContainer.llService.setSelected(false);
+        mBinding.tabBottomContainer.llMine.setSelected(false);
         linearLayout.setSelected(true);
     }
 }

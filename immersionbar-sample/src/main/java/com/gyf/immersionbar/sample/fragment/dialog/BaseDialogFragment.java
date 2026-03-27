@@ -8,6 +8,8 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
+import androidx.viewbinding.ViewBinding;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,21 +25,18 @@ import com.gyf.immersionbar.sample.utils.Utils;
 
 import org.jetbrains.annotations.NotNull;
 
-import butterknife.ButterKnife;
-import butterknife.Unbinder;
-
 /**
  * DialogFragment 实现沉浸式的基类
  *
  * @author geyifeng
  * @date 2017 /8/26
  */
-public abstract class BaseDialogFragment extends DialogFragment {
+public abstract class BaseDialogFragment<VB extends ViewBinding> extends DialogFragment {
 
     protected Activity mActivity;
     protected View mRootView;
     protected Window mWindow;
-    private Unbinder unbinder;
+    protected VB mBinding;
     public Integer[] mWidthAndHeight;
 
     @Override
@@ -66,7 +65,10 @@ public abstract class BaseDialogFragment extends DialogFragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        mRootView = inflater.inflate(setLayoutId(), container, false);
+        mBinding = createViewBinding();
+        if (mBinding != null) {
+            mRootView = mBinding.getRoot();
+        }
         return mRootView;
     }
 
@@ -74,7 +76,6 @@ public abstract class BaseDialogFragment extends DialogFragment {
     @Override
     public void onViewCreated(@NotNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        unbinder = ButterKnife.bind(this, view);
         if (isImmersionBarEnabled()) {
             initImmersionBar();
         }
@@ -92,7 +93,6 @@ public abstract class BaseDialogFragment extends DialogFragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        unbinder.unbind();
     }
 
     @Override
@@ -106,7 +106,7 @@ public abstract class BaseDialogFragment extends DialogFragment {
      *
      * @return the layout id
      */
-    protected abstract int setLayoutId();
+    protected abstract VB createViewBinding();
 
     /**
      * 是否在Fragment使用沉浸式

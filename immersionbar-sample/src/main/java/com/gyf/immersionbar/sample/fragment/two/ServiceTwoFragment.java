@@ -2,16 +2,18 @@ package com.gyf.immersionbar.sample.fragment.two;
 
 import com.gyf.immersionbar.ImmersionBar;
 import com.gyf.immersionbar.sample.R;
+import com.gyf.immersionbar.sample.databinding.FragmentTwoServiceBinding;
 import com.gyf.immersionbar.sample.fragment.BaseImmersionFragment;
 
 /**
  * @author geyifeng
  * @date 2017/7/20
  */
-public class ServiceTwoFragment extends BaseImmersionFragment {
+public class ServiceTwoFragment extends BaseImmersionFragment<FragmentTwoServiceBinding> {
+
     @Override
-    protected int getLayoutId() {
-        return R.layout.fragment_two_service;
+    protected FragmentTwoServiceBinding createViewBinding() {
+        return FragmentTwoServiceBinding.inflate(getLayoutInflater());
     }
 
     @Override

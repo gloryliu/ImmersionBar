@@ -48,5 +48,7 @@
         </LinearLayout>
     </FrameLayout>
 
-    <include layout="@layout/drawer_left" />
+    <include
+        android:id="@+id/drawerLeft"
+        layout="@layout/drawer_left" />
 </androidx.drawerlayout.widget.DrawerLayout>

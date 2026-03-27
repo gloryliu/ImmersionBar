@@ -1,29 +1,25 @@
 package com.gyf.immersionbar.sample.activity;
 
-import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 
 import com.gyf.immersionbar.ImmersionBar;
 import com.gyf.immersionbar.sample.R;
 import com.gyf.immersionbar.sample.adapter.EditAdapter;
+import com.gyf.immersionbar.sample.databinding.ActivityAllEditBinding;
 
 import java.util.ArrayList;
-
-import butterknife.BindView;
 
 /**
  * @author geyifeng
  */
-public class AllEditActivity extends BaseActivity {
+public class AllEditActivity extends BaseActivity<ActivityAllEditBinding> {
 
-    @BindView(R.id.recyclerView)
-    RecyclerView recyclerView;
 
     private ArrayList<String> mData = new ArrayList<>();
 
     @Override
-    protected int getLayoutId() {
-        return R.layout.activity_all_edit;
+    protected ActivityAllEditBinding createViewBinding() {
+        return ActivityAllEditBinding.inflate(getLayoutInflater());
     }
 
     @Override
@@ -44,9 +40,9 @@ public class AllEditActivity extends BaseActivity {
     protected void initView() {
         super.initView();
         EditAdapter adapter = new EditAdapter();
-        adapter.addHeaderView(LayoutInflater.from(this).inflate(R.layout.item_edit_header, recyclerView, false));
-        adapter.addFooterView(LayoutInflater.from(this).inflate(R.layout.item_edit_footer, recyclerView, false));
+        adapter.addHeaderView(LayoutInflater.from(this).inflate(R.layout.item_edit_header, mBinding.recyclerView, false));
+        adapter.addFooterView(LayoutInflater.from(this).inflate(R.layout.item_edit_footer, mBinding.recyclerView, false));
         adapter.setNewData(mData);
-        recyclerView.setAdapter(adapter);
+        mBinding.recyclerView.setAdapter(adapter);
     }
 }

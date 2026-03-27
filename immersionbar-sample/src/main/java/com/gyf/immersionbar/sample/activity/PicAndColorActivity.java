@@ -1,8 +1,8 @@
 package com.gyf.immersionbar.sample.activity;
 
-import androidx.appcompat.widget.Toolbar;
+import androidx.viewbinding.ViewBinding;
+
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.Toast;
 
@@ -10,27 +10,19 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.gyf.immersionbar.ImmersionBar;
 import com.gyf.immersionbar.sample.R;
+import com.gyf.immersionbar.sample.databinding.ActivityPicColorBinding;
+import com.gyf.immersionbar.sample.utils.ClickHelper;
 import com.gyf.immersionbar.sample.utils.Utils;
-
-import butterknife.BindView;
-import butterknife.OnClick;
 
 /**
  * @author gyf
  * @date 2016/10/24
  */
-public class PicAndColorActivity extends BaseActivity implements SeekBar.OnSeekBarChangeListener {
-
-    @BindView(R.id.toolbar)
-    Toolbar toolbar;
-    @BindView(R.id.seek_bar)
-    SeekBar seekBar;
-    @BindView(R.id.mIv)
-    ImageView mIv;
+public class PicAndColorActivity extends BaseActivity<ActivityPicColorBinding> implements SeekBar.OnSeekBarChangeListener {
 
     @Override
-    protected int getLayoutId() {
-        return R.layout.activity_pic_color;
+    protected ActivityPicColorBinding createViewBinding() {
+        return ActivityPicColorBinding.inflate(getLayoutInflater());
     }
 
     @Override
@@ -48,32 +40,27 @@ public class PicAndColorActivity extends BaseActivity implements SeekBar.OnSeekB
         super.initView();
         Glide.with(this).asBitmap().load(Utils.getPic())
                 .apply(new RequestOptions().placeholder(R.mipmap.test))
-                .into(mIv);
+                .into(mBinding.mIv);
     }
 
     @Override
     protected void setListener() {
-        seekBar.setOnSeekBarChangeListener(this);
+        mBinding.seekBar.setOnSeekBarChangeListener(this);
+        ClickHelper.setClickListeners(mBinding, this::onClick, R.id.btn_status_color, R.id.btn_navigation_color, R.id.btn_color);
     }
 
-    @OnClick({R.id.btn_status_color, R.id.btn_navigation_color, R.id.btn_color})
     public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.btn_status_color:
-                ImmersionBar.with(this).statusBarColor(R.color.colorAccent).init();
-                break;
-            case R.id.btn_navigation_color:
-                if (ImmersionBar.hasNavigationBar(this)) {
-                    ImmersionBar.with(this).navigationBarColor(R.color.colorAccent).init();
-                } else {
-                    Toast.makeText(this, "当前设备没有导航栏", Toast.LENGTH_SHORT).show();
-                }
-                break;
-            case R.id.btn_color:
-                ImmersionBar.with(this).getTag("PicAndColor").init();
-                break;
-            default:
-                break;
+        int viewId = v.getId();
+        if (viewId == R.id.btn_status_color) {
+            ImmersionBar.with(this).statusBarColor(R.color.colorAccent).init();
+        } else if (viewId == R.id.btn_navigation_color) {
+            if (ImmersionBar.hasNavigationBar(this)) {
+                ImmersionBar.with(this).navigationBarColor(R.color.colorAccent).init();
+            } else {
+                Toast.makeText(this, "当前设备没有导航栏", Toast.LENGTH_SHORT).show();
+            }
+        } else if (viewId == R.id.btn_color) {
+            ImmersionBar.with(this).getTag("PicAndColor").init();
         }
     }
 
@@ -83,7 +70,7 @@ public class PicAndColorActivity extends BaseActivity implements SeekBar.OnSeekB
         ImmersionBar.with(this)
                 .statusBarColorTransform(R.color.orange)
                 .navigationBarColorTransform(R.color.tans)
-                .addViewSupportTransformColor(toolbar)
+                .addViewSupportTransformColor(mBinding.toolbar)
                 .barAlpha(alpha)
                 .init();
     }

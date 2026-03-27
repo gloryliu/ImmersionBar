@@ -2,6 +2,7 @@ package com.gyf.immersionbar.sample.fragment.two;
 
 import com.gyf.immersionbar.ImmersionBar;
 import com.gyf.immersionbar.sample.R;
+import com.gyf.immersionbar.sample.databinding.FragmentTwoMineBinding;
 import com.gyf.immersionbar.sample.fragment.BaseImmersionFragment;
 
 /**
@@ -9,11 +10,11 @@ import com.gyf.immersionbar.sample.fragment.BaseImmersionFragment;
  * @date 2017/7/20
  */
 
-public class MineTwoFragment extends BaseImmersionFragment {
+public class MineTwoFragment extends BaseImmersionFragment<FragmentTwoMineBinding> {
 
     @Override
-    protected int getLayoutId() {
-        return R.layout.fragment_two_mine;
+    protected FragmentTwoMineBinding createViewBinding() {
+        return FragmentTwoMineBinding.inflate(getLayoutInflater());
     }
 
     @Override

@@ -2,78 +2,62 @@ package com.gyf.immersionbar.sample.activity;
 
 import androidx.fragment.app.FragmentTransaction;
 import android.view.View;
-import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 
 import com.gyf.immersionbar.sample.R;
+import com.gyf.immersionbar.sample.databinding.ActivityFragmentTwoBinding;
 import com.gyf.immersionbar.sample.fragment.two.CategoryTwoFragment;
 import com.gyf.immersionbar.sample.fragment.two.HomeTwoFragment;
 import com.gyf.immersionbar.sample.fragment.two.MineTwoFragment;
 import com.gyf.immersionbar.sample.fragment.two.ServiceTwoFragment;
 
-import butterknife.BindView;
 
 /**
  * @author geyifeng
  * @date 2017/7/20
  */
-public class FragmentTwoActivity extends BaseActivity implements View.OnClickListener {
+public class FragmentTwoActivity extends BaseActivity<ActivityFragmentTwoBinding> implements View.OnClickListener {
 
-    @BindView(R.id.content)
-    FrameLayout content;
-    @BindView(R.id.ll_home)
-    LinearLayout llHome;
-    @BindView(R.id.ll_category)
-    LinearLayout llCategory;
-    @BindView(R.id.ll_service)
-    LinearLayout llService;
-    @BindView(R.id.ll_mine)
-    LinearLayout llMine;
     private HomeTwoFragment homeTwoFragment;
     private CategoryTwoFragment categoryTwoFragment;
     private ServiceTwoFragment serviceTwoFragment;
     private MineTwoFragment mineTwoFragment;
 
+
     @Override
-    protected int getLayoutId() {
-        return R.layout.activity_fragment_two;
+    protected ActivityFragmentTwoBinding createViewBinding() {
+        return ActivityFragmentTwoBinding.inflate(getLayoutInflater());
     }
 
     @Override
     protected void initView() {
         selectedFragment(0);
-        tabSelected(llHome);
+        tabSelected(mBinding.tabBottomContainer.llHome);
     }
 
     @Override
     protected void setListener() {
-        llHome.setOnClickListener(this);
-        llCategory.setOnClickListener(this);
-        llService.setOnClickListener(this);
-        llMine.setOnClickListener(this);
+        mBinding.tabBottomContainer.llHome.setOnClickListener(this);
+        mBinding.tabBottomContainer.llCategory.setOnClickListener(this);
+        mBinding.tabBottomContainer.llService.setOnClickListener(this);
+        mBinding.tabBottomContainer.llMine.setOnClickListener(this);
     }
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.ll_home:
-                selectedFragment(0);
-                tabSelected(llHome);
-                break;
-            case R.id.ll_category:
-                selectedFragment(1);
-                tabSelected(llCategory);
-                break;
-            case R.id.ll_service:
-                selectedFragment(2);
-                tabSelected(llService);
-                break;
-            case R.id.ll_mine:
-                selectedFragment(3);
-                tabSelected(llMine);
-                break;
-            default:
-                break;
+        int viewId = v.getId();
+        if (viewId == R.id.ll_home) {
+            selectedFragment(0);
+            tabSelected(mBinding.tabBottomContainer.llHome);
+        } else if (viewId == R.id.ll_category) {
+            selectedFragment(1);
+            tabSelected(mBinding.tabBottomContainer.llCategory);
+        } else if (viewId == R.id.ll_service) {
+            selectedFragment(2);
+            tabSelected(mBinding.tabBottomContainer.llService);
+        } else if (viewId == R.id.ll_mine) {
+            selectedFragment(3);
+            tabSelected(mBinding.tabBottomContainer.llMine);
         }
     }
 
@@ -135,10 +119,10 @@ public class FragmentTwoActivity extends BaseActivity implements View.OnClickLis
     }
 
     private void tabSelected(LinearLayout linearLayout) {
-        llHome.setSelected(false);
-        llCategory.setSelected(false);
-        llService.setSelected(false);
-        llMine.setSelected(false);
+        mBinding.tabBottomContainer.llHome.setSelected(false);
+        mBinding.tabBottomContainer.llCategory.setSelected(false);
+        mBinding.tabBottomContainer.llService.setSelected(false);
+        mBinding.tabBottomContainer.llMine.setSelected(false);
         linearLayout.setSelected(true);
     }
 }

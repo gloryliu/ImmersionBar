@@ -8,17 +8,16 @@ import androidx.core.content.ContextCompat;
 import androidx.core.graphics.ColorUtils;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.appcompat.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.gyf.immersionbar.ImmersionBar;
 import com.gyf.immersionbar.sample.R;
 import com.gyf.immersionbar.sample.activity.FragmentOneActivity;
 import com.gyf.immersionbar.sample.adapter.OneAdapter;
+import com.gyf.immersionbar.sample.databinding.FragmentOneHomeBinding;
 import com.gyf.immersionbar.sample.fragment.BaseImmersionFragment;
 import com.gyf.immersionbar.sample.utils.GlideImageLoader;
 import com.gyf.immersionbar.sample.utils.Utils;
@@ -29,31 +28,16 @@ import com.youth.banner.Banner;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.BindView;
-
 /**
  * @author geyifeng
  * @date 2017/5/12
  */
-public class HomeOneFragment extends BaseImmersionFragment {
+public class HomeOneFragment extends BaseImmersionFragment<FragmentOneHomeBinding> {
 
-    @BindView(R.id.toolbar)
-    Toolbar mToolbar;
-    @BindView(R.id.rv)
-    RecyclerView mRv;
-    @BindView(R.id.refreshLayout)
-    TwinklingRefreshLayout refreshLayout;
-    @BindView(R.id.llScan)
-    LinearLayout mLlScan;
     private OneAdapter mOneAdapter;
     private List<String> mItemList = new ArrayList<>();
     private List<String> mImages = new ArrayList<>();
     private int bannerHeight;
-
-    @Override
-    protected int getLayoutId() {
-        return R.layout.fragment_one_home;
-    }
 
     @Override
     protected void initData() {
@@ -65,13 +49,13 @@ public class HomeOneFragment extends BaseImmersionFragment {
 
     @Override
     protected void initView() {
-        refreshLayout.setEnableLoadmore(false);
+        mBinding.refreshLayout.setEnableLoadmore(false);
         final LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity(),
                 LinearLayoutManager.VERTICAL, false);
-        mRv.setLayoutManager(linearLayoutManager);
+        mBinding.rv.setLayoutManager(linearLayoutManager);
         mOneAdapter = new OneAdapter();
         mOneAdapter.openLoadAnimation(BaseQuickAdapter.SCALEIN);
-        mRv.setAdapter(mOneAdapter);
+        mBinding.rv.setAdapter(mOneAdapter);
         addHeaderView();
         mOneAdapter.setPreLoadNumber(1);
         mOneAdapter.setNewData(mItemList);
@@ -79,7 +63,7 @@ public class HomeOneFragment extends BaseImmersionFragment {
 
     private void addHeaderView() {
         if (mImages != null && mImages.size() > 0) {
-            View headView = LayoutInflater.from(mActivity).inflate(R.layout.item_banner, (ViewGroup) mRv.getParent(), false);
+            View headView = LayoutInflater.from(mActivity).inflate(R.layout.item_banner, (ViewGroup) mBinding.rv.getParent(), false);
             Banner banner = headView.findViewById(R.id.banner);
             banner.setImages(mImages)
                     .setImageLoader(new GlideImageLoader())
@@ -87,14 +71,14 @@ public class HomeOneFragment extends BaseImmersionFragment {
                     .start();
             mOneAdapter.addHeaderView(headView);
             ViewGroup.LayoutParams bannerParams = banner.getLayoutParams();
-            ViewGroup.LayoutParams titleBarParams = mToolbar.getLayoutParams();
+            ViewGroup.LayoutParams titleBarParams = mBinding.titleBarOne.toolbar.getLayoutParams();
             bannerHeight = bannerParams.height - titleBarParams.height - ImmersionBar.getStatusBarHeight(mActivity);
         }
     }
 
     @Override
     protected void setListener() {
-        mRv.addOnScrollListener(new RecyclerView.OnScrollListener() {
+        mBinding.rv.addOnScrollListener(new RecyclerView.OnScrollListener() {
             private int totalDy = 0;
 
             @Override
@@ -103,10 +87,10 @@ public class HomeOneFragment extends BaseImmersionFragment {
                 totalDy += dy;
                 if (totalDy <= bannerHeight) {
                     float alpha = (float) totalDy / bannerHeight;
-                    mToolbar.setBackgroundColor(ColorUtils.blendARGB(Color.TRANSPARENT
+                    mBinding.titleBarOne.toolbar.setBackgroundColor(ColorUtils.blendARGB(Color.TRANSPARENT
                             , ContextCompat.getColor(mActivity, R.color.colorPrimary), alpha));
                 } else {
-                    mToolbar.setBackgroundColor(ColorUtils.blendARGB(Color.TRANSPARENT
+                    mBinding.titleBarOne.toolbar.setBackgroundColor(ColorUtils.blendARGB(Color.TRANSPARENT
                             , ContextCompat.getColor(mActivity, R.color.colorPrimary), 1));
                 }
             }
@@ -118,8 +102,8 @@ public class HomeOneFragment extends BaseImmersionFragment {
             } else {
                 mOneAdapter.loadMoreComplete();
             }
-        }, 2000), mRv);
-        refreshLayout.setOnRefreshListener(new RefreshListenerAdapter() {
+        }, 2000), mBinding.rv);
+        mBinding.refreshLayout.setOnRefreshListener(new RefreshListenerAdapter() {
             @Override
             public void onRefresh(final TwinklingRefreshLayout refreshLayout) {
                 new Handler().postDelayed(() -> {
@@ -127,32 +111,32 @@ public class HomeOneFragment extends BaseImmersionFragment {
                     mItemList.addAll(newData());
                     mOneAdapter.setNewData(mItemList);
                     refreshLayout.finishRefreshing();
-                    if (mToolbar != null) {
-                        mToolbar.setVisibility(View.VISIBLE);
+                    if (mBinding.titleBarOne.toolbar != null) {
+                        mBinding.titleBarOne.toolbar.setVisibility(View.VISIBLE);
                     }
                 }, 2000);
             }
 
             @Override
             public void onPullingDown(TwinklingRefreshLayout refreshLayout, float fraction) {
-                if (mToolbar != null) {
-                    mToolbar.setVisibility(View.GONE);
+                if (mBinding.titleBarOne.toolbar != null) {
+                    mBinding.titleBarOne.toolbar.setVisibility(View.GONE);
                 }
             }
 
             @Override
             public void onPullDownReleasing(TwinklingRefreshLayout refreshLayout, float fraction) {
-                if (mToolbar != null) {
+                if (mBinding.titleBarOne.toolbar != null) {
                     if (Math.abs(fraction - 1.0f) > 0) {
-                        mToolbar.setVisibility(View.VISIBLE);
+                        mBinding.titleBarOne.toolbar.setVisibility(View.VISIBLE);
                     } else {
-                        mToolbar.setVisibility(View.GONE);
+                        mBinding.titleBarOne.toolbar.setVisibility(View.GONE);
                     }
                 }
             }
         });
 
-        mLlScan.setOnClickListener(v -> startActivity(new Intent(getActivity(), FragmentOneActivity.class)));
+        mBinding.titleBarOne.llScan.setOnClickListener(v -> startActivity(new Intent(getActivity(), FragmentOneActivity.class)));
     }
 
     private List<String> addData() {
@@ -169,6 +153,11 @@ public class HomeOneFragment extends BaseImmersionFragment {
             data.add("item" + i);
         }
         return data;
+    }
+
+    @Override
+    protected FragmentOneHomeBinding createViewBinding() {
+        return FragmentOneHomeBinding.inflate(getLayoutInflater());
     }
 
     @Override

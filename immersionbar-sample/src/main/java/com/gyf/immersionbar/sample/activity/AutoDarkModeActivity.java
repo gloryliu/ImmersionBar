@@ -3,14 +3,9 @@ package com.gyf.immersionbar.sample.activity;
 import android.annotation.SuppressLint;
 import android.graphics.Color;
 import com.google.android.material.animation.ArgbEvaluatorCompat;
-import android.view.View;
 import android.widget.SeekBar;
-import android.widget.TextView;
-
 import com.gyf.immersionbar.ImmersionBar;
-import com.gyf.immersionbar.sample.R;
-
-import butterknife.BindView;
+import com.gyf.immersionbar.sample.databinding.ActivityAutoStatusFontBinding;
 
 /**
  * 自动调整状态栏字体
@@ -18,19 +13,11 @@ import butterknife.BindView;
  * @author github.com/dengyuhan
  * @date 2018/12/16 03:56
  */
-public class AutoDarkModeActivity extends BaseActivity implements SeekBar.OnSeekBarChangeListener {
-
-    @BindView(R.id.seek_bar)
-    SeekBar seekBar;
-
-    @BindView(R.id.toolbar)
-    View toolbar;
-    @BindView(R.id.tv_title)
-    TextView tvTitle;
+public class AutoDarkModeActivity extends BaseActivity<ActivityAutoStatusFontBinding> implements SeekBar.OnSeekBarChangeListener {
 
     @Override
-    protected int getLayoutId() {
-        return R.layout.activity_auto_status_font;
+    protected ActivityAutoStatusFontBinding createViewBinding() {
+        return ActivityAutoStatusFontBinding.inflate(getLayoutInflater());
     }
 
     @Override
@@ -46,7 +33,7 @@ public class AutoDarkModeActivity extends BaseActivity implements SeekBar.OnSeek
     @SuppressLint("SetTextI18n")
     @Override
     protected void setListener() {
-        seekBar.setOnSeekBarChangeListener(this);
+        mBinding.seekBar.setOnSeekBarChangeListener(this);
     }
 
     @Override
@@ -55,8 +42,8 @@ public class AutoDarkModeActivity extends BaseActivity implements SeekBar.OnSeek
         Integer barColor = ArgbEvaluatorCompat.getInstance().evaluate(fraction, Color.BLACK, Color.WHITE);
         Integer textColor = ArgbEvaluatorCompat.getInstance().evaluate(fraction, Color.WHITE, Color.BLACK);
 
-        toolbar.setBackgroundColor(barColor);
-        tvTitle.setTextColor(textColor);
+        mBinding.toolbar.setBackgroundColor(barColor);
+        mBinding.tvTitle.setTextColor(textColor);
 
         ImmersionBar.with(this)
                 .statusBarColorInt(barColor)

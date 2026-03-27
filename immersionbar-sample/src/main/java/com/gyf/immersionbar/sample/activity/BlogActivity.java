@@ -12,8 +12,7 @@ import android.webkit.WebViewClient;
 
 import com.gyf.immersionbar.ImmersionBar;
 import com.gyf.immersionbar.sample.R;
-
-import butterknife.BindView;
+import com.gyf.immersionbar.sample.databinding.ActivityGitHubBinding;
 
 import static android.view.KeyEvent.KEYCODE_BACK;
 
@@ -22,10 +21,8 @@ import static android.view.KeyEvent.KEYCODE_BACK;
  * @date 2017/8/3
  */
 
-public class BlogActivity extends BaseActivity {
+public class BlogActivity extends BaseActivity<ActivityGitHubBinding> {
 
-    @BindView(R.id.web_git)
-    WebView mWebView;
     private String blog;
 
     @Override
@@ -35,18 +32,13 @@ public class BlogActivity extends BaseActivity {
     }
 
     @Override
-    protected int getLayoutId() {
-        return R.layout.activity_git_hub;
-    }
-
-    @Override
     protected void initView() {
         if ("github".equals(blog)) {
-            mWebView.loadUrl("https://github.com/gyf-dev/ImmersionBar");
+            mBinding.webGit.loadUrl("https://github.com/gyf-dev/ImmersionBar");
         } else {
-            mWebView.loadUrl("https://www.jianshu.com/p/2a884e211a62");
+            mBinding.webGit.loadUrl("https://www.jianshu.com/p/2a884e211a62");
         }
-        mWebView.setWebViewClient(new WebViewClient() {
+        mBinding.webGit.setWebViewClient(new WebViewClient() {
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
                 view.loadUrl(request.toString());
@@ -67,8 +59,8 @@ public class BlogActivity extends BaseActivity {
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if ((keyCode == KEYCODE_BACK) && mWebView.canGoBack()) {
-            mWebView.goBack();
+        if ((keyCode == KEYCODE_BACK) && mBinding.webGit.canGoBack()) {
+            mBinding.webGit.goBack();
             return true;
         }
         return super.onKeyDown(keyCode, event);
@@ -78,21 +70,25 @@ public class BlogActivity extends BaseActivity {
     protected void onDestroy() {
         super.onDestroy();
         try {
-            if (mWebView != null) {
-                ViewParent parent = mWebView.getParent();
+            if (mBinding.webGit != null) {
+                ViewParent parent = mBinding.webGit.getParent();
                 if (parent != null) {
-                    ((ViewGroup) parent).removeView(mWebView);
+                    ((ViewGroup) parent).removeView(mBinding.webGit);
                 }
-                mWebView.stopLoading();
+                mBinding.webGit.stopLoading();
                 // 退出时调用此方法，移除绑定的服务，否则某些特定系统会报错
-                mWebView.getSettings().setJavaScriptEnabled(false);
-                mWebView.clearHistory();
-                mWebView.clearView();
-                mWebView.removeAllViews();
-                mWebView.destroy();
-                mWebView = null;
+                mBinding.webGit.getSettings().setJavaScriptEnabled(false);
+                mBinding.webGit.clearHistory();
+                mBinding.webGit.clearView();
+                mBinding.webGit.removeAllViews();
+                mBinding.webGit.destroy();
             }
         } catch (Exception ignored) {
         }
+    }
+
+    @Override
+    protected ActivityGitHubBinding createViewBinding() {
+        return ActivityGitHubBinding.inflate(getLayoutInflater());
     }
 }

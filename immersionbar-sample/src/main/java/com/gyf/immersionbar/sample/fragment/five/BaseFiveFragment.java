@@ -5,6 +5,8 @@ import android.content.Context;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.viewbinding.ViewBinding;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,8 +14,6 @@ import android.view.ViewGroup;
 import com.gyf.immersionbar.ImmersionBar;
 import com.gyf.immersionbar.sample.R;
 
-import butterknife.ButterKnife;
-import butterknife.Unbinder;
 import me.yokeyword.fragmentation.SupportFragment;
 
 /**
@@ -23,10 +23,10 @@ import me.yokeyword.fragmentation.SupportFragment;
  * @author geyifeng
  * @date 2017/8/12
  */
-public abstract class BaseFiveFragment extends SupportFragment {
+public abstract class BaseFiveFragment<VB extends ViewBinding> extends SupportFragment {
     protected Activity mActivity;
     protected View mRootView;
-    private Unbinder unbinder;
+    protected VB mBinding;
 
     @Override
     public void onAttach(Context context) {
@@ -37,14 +37,16 @@ public abstract class BaseFiveFragment extends SupportFragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        mRootView = inflater.inflate(getLayoutId(), container, false);
+        mBinding = createViewBinding();
+        if (mBinding != null) {
+            mRootView = mBinding.getRoot();
+        }
         return mRootView;
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        unbinder = ButterKnife.bind(this, view);
         View titleBar = view.findViewById(setTitleBar());
         ImmersionBar.setTitleBar(mActivity, titleBar);
         View statusBarView = view.findViewById(setStatusBarView());
@@ -82,7 +84,6 @@ public abstract class BaseFiveFragment extends SupportFragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        unbinder.unbind();
     }
 
 
@@ -91,7 +92,7 @@ public abstract class BaseFiveFragment extends SupportFragment {
      *
      * @return the layout id
      */
-    protected abstract int getLayoutId();
+    protected abstract VB createViewBinding();
 
     /**
      * 初始化数据

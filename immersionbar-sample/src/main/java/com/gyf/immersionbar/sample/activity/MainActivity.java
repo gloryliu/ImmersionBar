@@ -31,9 +31,11 @@ import com.gyf.immersionbar.sample.R;
 import com.gyf.immersionbar.sample.adapter.BannerAdapter;
 import com.gyf.immersionbar.sample.adapter.MainAdapter;
 import com.gyf.immersionbar.sample.bean.FunBean;
+import com.gyf.immersionbar.sample.databinding.ActivityMainBinding;
 import com.gyf.immersionbar.sample.event.NetworkEvent;
 import com.gyf.immersionbar.sample.fragment.SplashFragment;
 import com.gyf.immersionbar.sample.model.DataUtils;
+import com.gyf.immersionbar.sample.utils.ClickHelper;
 import com.gyf.immersionbar.sample.utils.DensityUtil;
 import com.gyf.immersionbar.sample.utils.GlideUtils;
 import com.gyf.immersionbar.sample.utils.Utils;
@@ -45,24 +47,11 @@ import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 
-import butterknife.BindView;
-import butterknife.OnClick;
 
 /**
  * @author geyifeng
  */
-public class MainActivity extends BaseActivity implements DrawerLayout.DrawerListener {
-
-    @BindView(R.id.drawer)
-    DrawerLayout drawer;
-    @BindView(R.id.toolbar)
-    Toolbar mToolbar;
-    @BindView(R.id.iv_bg)
-    ImageView ivBg;
-    @BindView(R.id.tv_version)
-    TextView tvVersion;
-    @BindView(R.id.mRv)
-    RecyclerView mRv;
+public class MainActivity extends BaseActivity<ActivityMainBinding> implements DrawerLayout.DrawerListener {
 
     /**
      * splash页面
@@ -92,13 +81,13 @@ public class MainActivity extends BaseActivity implements DrawerLayout.DrawerLis
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        drawer.removeDrawerListener(this);
+        mBinding.drawer.removeDrawerListener(this);
         EventBus.getDefault().unregister(this);
     }
 
     @Override
-    protected int getLayoutId() {
-        return R.layout.activity_main;
+    protected ActivityMainBinding createViewBinding() {
+        return ActivityMainBinding.inflate(getLayoutInflater());
     }
 
     @Override
@@ -116,14 +105,14 @@ public class MainActivity extends BaseActivity implements DrawerLayout.DrawerLis
     @SuppressLint("SetTextI18n")
     @Override
     protected void initView() {
-        drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+        mBinding.drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
         showSplash();
-        GlideUtils.loadBlurry(ivBg, Utils.getPic());
+        GlideUtils.loadBlurry(mBinding.drawerLeft.ivBg, Utils.getPic());
         mMainAdapter = new MainAdapter();
-        tvVersion.setText("当前版本：" + BuildConfig.VERSION_NAME);
+        mBinding.drawerLeft.tvVersion.setText("当前版本：" + BuildConfig.VERSION_NAME);
         mMainAdapter.openLoadAnimation(BaseQuickAdapter.SCALEIN);
         mMainAdapter.isFirstOnly(false);
-        mRv.setAdapter(mMainAdapter);
+        mBinding.mRv.setAdapter(mMainAdapter);
         mMainAdapter.setNewData(mMainData);
         addHeaderView();
         mBannerHeight = DensityUtil.dip2px(this, 180)
@@ -133,8 +122,8 @@ public class MainActivity extends BaseActivity implements DrawerLayout.DrawerLis
     @Override
     protected void setListener() {
         super.setListener();
-        drawer.addDrawerListener(this);
-        mRv.addOnScrollListener(new RecyclerView.OnScrollListener() {
+        mBinding.drawer.addDrawerListener(this);
+        mBinding.mRv.addOnScrollListener(new RecyclerView.OnScrollListener() {
             private int totalDy = 0;
 
             @Override
@@ -156,9 +145,9 @@ public class MainActivity extends BaseActivity implements DrawerLayout.DrawerLis
                 }
                 if (totalDy < mBannerHeight) {
                     float alpha = (float) totalDy / mBannerHeight;
-                    mToolbar.setAlpha(alpha);
+                    mBinding.toolbar.setAlpha(alpha);
                 } else {
-                    mToolbar.setAlpha(1);
+                    mBinding.toolbar.setAlpha(1);
                 }
 
             }
@@ -200,7 +189,7 @@ public class MainActivity extends BaseActivity implements DrawerLayout.DrawerLis
                     intent = new Intent(this, PopupActivity.class);
                     break;
                 case 10:
-                    drawer.openDrawer(GravityCompat.START);
+                    mBinding.drawer.openDrawer(GravityCompat.START);
                     break;
                 case 11:
                     intent = new Intent(this, CoordinatorActivity.class);
@@ -283,27 +272,24 @@ public class MainActivity extends BaseActivity implements DrawerLayout.DrawerLis
                 startActivity(intent);
             }
         });
+
+        ClickHelper.setClickListeners(mBinding, this::onClick, R.id.ll_github, R.id.ll_jianshu);
     }
 
 
-    @OnClick({R.id.ll_github, R.id.ll_jianshu})
     public void onClick(View view) {
         Intent intent = null;
-        switch (view.getId()) {
-            case R.id.ll_github:
-                intent = new Intent(this, BlogActivity.class);
-                Bundle bundle = new Bundle();
-                bundle.putString("blog", "github");
-                intent.putExtra("bundle", bundle);
-                break;
-            case R.id.ll_jianshu:
-                intent = new Intent(this, BlogActivity.class);
-                Bundle bundle2 = new Bundle();
-                bundle2.putString("blog", "jianshu");
-                intent.putExtra("bundle", bundle2);
-                break;
-            default:
-                break;
+        int viewId = view.getId();
+        if (viewId == R.id.ll_github) {
+            intent = new Intent(this, BlogActivity.class);
+            Bundle bundle = new Bundle();
+            bundle.putString("blog", "github");
+            intent.putExtra("bundle", bundle);
+        } else if (viewId == R.id.ll_jianshu) {
+            intent = new Intent(this, BlogActivity.class);
+            Bundle bundle2 = new Bundle();
+            bundle2.putString("blog", "jianshu");
+            intent.putExtra("bundle", bundle2);
         }
         if (intent != null) {
             startActivity(intent);
@@ -331,9 +317,9 @@ public class MainActivity extends BaseActivity implements DrawerLayout.DrawerLis
         }
         mSplashFragment.setOnSplashListener((time, totalTime) -> {
             if (time != 0) {
-                drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+                mBinding.drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
             } else {
-                drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
+                mBinding.drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
             }
         });
     }
@@ -344,7 +330,7 @@ public class MainActivity extends BaseActivity implements DrawerLayout.DrawerLis
     }
 
     private void addBannerView() {
-        View bannerView = LayoutInflater.from(this).inflate(R.layout.item_main_banner, mRv, false);
+        View bannerView = LayoutInflater.from(this).inflate(R.layout.item_main_banner, mBinding.mRv, false);
         mIvBanner = bannerView.findViewById(R.id.iv_banner);
         RecyclerView recyclerView = bannerView.findViewById(R.id.rv_content);
         ViewUtils.increaseViewHeightByStatusBarHeight(this, mIvBanner);
@@ -373,7 +359,7 @@ public class MainActivity extends BaseActivity implements DrawerLayout.DrawerLis
     }
 
     private void addNetworkView() {
-        mNetworkView = LayoutInflater.from(this).inflate(R.layout.item_network, mRv, false);
+        mNetworkView = LayoutInflater.from(this).inflate(R.layout.item_network, mBinding.mRv, false);
         if (!Utils.isNetworkConnected(this)) {
             mMainAdapter.addHeaderView(mNetworkView);
         }
@@ -423,7 +409,7 @@ public class MainActivity extends BaseActivity implements DrawerLayout.DrawerLis
 
     @Override
     public void onDrawerClosed(@NonNull View view) {
-        GlideUtils.loadBlurry(ivBg, Utils.getPic());
+        GlideUtils.loadBlurry(mBinding.drawerLeft.ivBg, Utils.getPic());
     }
 
     @Override
@@ -433,8 +419,8 @@ public class MainActivity extends BaseActivity implements DrawerLayout.DrawerLis
 
     @Override
     public void onBackPressed() {
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawer(GravityCompat.START);
+        if (mBinding.drawer.isDrawerOpen(GravityCompat.START)) {
+            mBinding.drawer.closeDrawer(GravityCompat.START);
         } else {
             if (mSplashFragment != null) {
                 if (mSplashFragment.isFinish()) {

@@ -2,15 +2,17 @@ package com.gyf.immersionbar.sample.activity;
 
 import com.gyf.immersionbar.ImmersionBar;
 import com.gyf.immersionbar.sample.R;
+import com.gyf.immersionbar.sample.databinding.ActivityLoginBinding;
 
 /**
  * @author geyifeng
  */
-public class LoginActivity extends BaseActivity {
+public class LoginActivity extends BaseActivity<ActivityLoginBinding> {
+
 
     @Override
-    protected int getLayoutId() {
-        return R.layout.activity_login;
+    protected ActivityLoginBinding createViewBinding() {
+        return ActivityLoginBinding.inflate(getLayoutInflater());
     }
 
     @Override

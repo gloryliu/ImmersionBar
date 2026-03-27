@@ -15,9 +15,9 @@ import android.widget.PopupWindow;
 import com.gyf.immersionbar.ImmersionBar;
 import com.gyf.immersionbar.OSUtils;
 import com.gyf.immersionbar.sample.R;
+import com.gyf.immersionbar.sample.databinding.ActivityPopupBinding;
+import com.gyf.immersionbar.sample.utils.ClickHelper;
 import com.gyf.immersionbar.sample.utils.Utils;
-
-import butterknife.OnClick;
 
 /**
  * 结合popupWindow使用
@@ -25,15 +25,15 @@ import butterknife.OnClick;
  *
  * @author geyifeng
  */
-public class PopupActivity extends BaseActivity {
+public class PopupActivity extends BaseActivity<ActivityPopupBinding> {
 
     private View mPopupView;
     private PopupWindow mPopupWindow;
     private int mCurPosition;
 
     @Override
-    protected int getLayoutId() {
-        return R.layout.activity_popup;
+    protected ActivityPopupBinding createViewBinding() {
+        return ActivityPopupBinding.inflate(getLayoutInflater());
     }
 
     @Override
@@ -54,33 +54,31 @@ public class PopupActivity extends BaseActivity {
         updatePopupView();
     }
 
+    @Override
+    protected void setListener() {
+        super.setListener();
+        ClickHelper.setClickListeners(mBinding, this::onViewClick, R.id.btn_full, R.id.btn_top, R.id.btn_bottom, R.id.btn_left, R.id.btn_right);
+    }
+
     /**
      * On view click.
      *
      * @param view the view
      */
-    @OnClick({R.id.btn_full, R.id.btn_top, R.id.btn_bottom, R.id.btn_left, R.id.btn_right})
     public void onViewClick(View view) {
         Integer[] widthAndHeight = Utils.getWidthAndHeight(getWindow());
         mCurPosition = view.getId();
-        switch (view.getId()) {
-            case R.id.btn_full:
-                showPopup(Gravity.NO_GRAVITY, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, R.style.RightAnimation);
-                break;
-            case R.id.btn_top:
-                showPopup(Gravity.TOP, ViewGroup.LayoutParams.MATCH_PARENT, widthAndHeight[1] / 2, R.style.TopAnimation);
-                break;
-            case R.id.btn_bottom:
-                showPopup(Gravity.BOTTOM, ViewGroup.LayoutParams.MATCH_PARENT, widthAndHeight[1] / 2, R.style.BottomAnimation);
-                break;
-            case R.id.btn_left:
-                showPopup(Gravity.START, widthAndHeight[0] / 2, ViewGroup.LayoutParams.MATCH_PARENT, R.style.LeftAnimation);
-                break;
-            case R.id.btn_right:
-                showPopup(Gravity.END, widthAndHeight[0] / 2, ViewGroup.LayoutParams.MATCH_PARENT, R.style.RightAnimation);
-                break;
-            default:
-                break;
+        int viewId = view.getId();
+        if (viewId == R.id.btn_full) {
+            showPopup(Gravity.NO_GRAVITY, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, R.style.RightAnimation);
+        } else if (viewId == R.id.btn_top) {
+            showPopup(Gravity.TOP, ViewGroup.LayoutParams.MATCH_PARENT, widthAndHeight[1] / 2, R.style.TopAnimation);
+        } else if (viewId == R.id.btn_bottom) {
+            showPopup(Gravity.BOTTOM, ViewGroup.LayoutParams.MATCH_PARENT, widthAndHeight[1] / 2, R.style.BottomAnimation);
+        } else if (viewId == R.id.btn_left) {
+            showPopup(Gravity.START, widthAndHeight[0] / 2, ViewGroup.LayoutParams.MATCH_PARENT, R.style.LeftAnimation);
+        } else if (viewId == R.id.btn_right) {
+            showPopup(Gravity.END, widthAndHeight[0] / 2, ViewGroup.LayoutParams.MATCH_PARENT, R.style.RightAnimation);
         }
     }
 
@@ -123,17 +121,10 @@ public class PopupActivity extends BaseActivity {
      */
     private void updatePopupWindow() {
         Integer[] widthAndHeight = Utils.getWidthAndHeight(getWindow());
-        switch (mCurPosition) {
-            case R.id.btn_top:
-            case R.id.btn_bottom:
-                mPopupWindow.update(0, 0, ViewGroup.LayoutParams.MATCH_PARENT, widthAndHeight[1] / 2);
-                break;
-            case R.id.btn_left:
-            case R.id.btn_right:
-                mPopupWindow.update(0, 0, widthAndHeight[0] / 2, ViewGroup.LayoutParams.MATCH_PARENT);
-                break;
-            default:
-                break;
+        if (mCurPosition == R.id.btn_top || mCurPosition == R.id.btn_bottom) {
+            mPopupWindow.update(0, 0, ViewGroup.LayoutParams.MATCH_PARENT, widthAndHeight[1] / 2);
+        } else if (mCurPosition == R.id.btn_left || mCurPosition == R.id.btn_right) {
+            mPopupWindow.update(0, 0, widthAndHeight[0] / 2, ViewGroup.LayoutParams.MATCH_PARENT);
         }
     }
 
@@ -162,56 +153,48 @@ public class PopupActivity extends BaseActivity {
                     isLandscapeLeft = false;
                 }
                 FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams) rlContent.getLayoutParams();
-                switch (mCurPosition) {
-                    case R.id.btn_full:
-                    case R.id.btn_top:
-                    case R.id.btn_bottom:
-                        if (isPortrait) {
-                            layoutParams.setMargins(0, 0, 0, navigationBarHeight);
+                if (mCurPosition == R.id.btn_full || mCurPosition == R.id.btn_top || mCurPosition == R.id.btn_bottom) {
+                    if (isPortrait) {
+                        layoutParams.setMargins(0, 0, 0, navigationBarHeight);
+                    } else {
+                        if (isLandscapeLeft) {
+                            layoutParams.setMargins(0, 0, navigationBarWidth, 0);
                         } else {
-                            if (isLandscapeLeft) {
+                            if (OSUtils.isEMUI3_x()) {
                                 layoutParams.setMargins(0, 0, navigationBarWidth, 0);
                             } else {
-                                if (OSUtils.isEMUI3_x()) {
-                                    layoutParams.setMargins(0, 0, navigationBarWidth, 0);
-                                } else {
-                                    layoutParams.setMargins(navigationBarWidth, 0, 0, 0);
-                                }
+                                layoutParams.setMargins(navigationBarWidth, 0, 0, 0);
                             }
                         }
-                        break;
-                    case R.id.btn_left:
-                        if (isPortrait) {
-                            layoutParams.setMargins(0, 0, 0, navigationBarHeight);
+                    }
+                } else if (mCurPosition == R.id.btn_left) {
+                    if (isPortrait) {
+                        layoutParams.setMargins(0, 0, 0, navigationBarHeight);
+                    } else {
+                        if (isLandscapeLeft) {
+                            layoutParams.setMargins(0, 0, 0, 0);
                         } else {
-                            if (isLandscapeLeft) {
+                            if (OSUtils.isEMUI3_x()) {
+                                layoutParams.setMargins(0, 0, navigationBarWidth, 0);
+                            } else {
+                                layoutParams.setMargins(navigationBarWidth, 0, 0, 0);
+                            }
+                        }
+                    }
+                } else if (mCurPosition == R.id.btn_right) {
+                    if (isPortrait) {
+                        layoutParams.setMargins(0, 0, 0, navigationBarHeight);
+                    } else {
+                        if (isLandscapeLeft) {
+                            layoutParams.setMargins(0, 0, navigationBarWidth, 0);
+                        } else {
+                            if (OSUtils.isEMUI3_x()) {
+                                layoutParams.setMargins(0, 0, navigationBarWidth, 0);
+                            } else {
                                 layoutParams.setMargins(0, 0, 0, 0);
-                            } else {
-                                if (OSUtils.isEMUI3_x()) {
-                                    layoutParams.setMargins(0, 0, navigationBarWidth, 0);
-                                } else {
-                                    layoutParams.setMargins(navigationBarWidth, 0, 0, 0);
-                                }
                             }
                         }
-                        break;
-                    case R.id.btn_right:
-                        if (isPortrait) {
-                            layoutParams.setMargins(0, 0, 0, navigationBarHeight);
-                        } else {
-                            if (isLandscapeLeft) {
-                                layoutParams.setMargins(0, 0, navigationBarWidth, 0);
-                            } else {
-                                if (OSUtils.isEMUI3_x()) {
-                                    layoutParams.setMargins(0, 0, navigationBarWidth, 0);
-                                } else {
-                                    layoutParams.setMargins(0, 0, 0, 0);
-                                }
-                            }
-                        }
-                        break;
-                    default:
-                        break;
+                    }
                 }
                 rlContent.setLayoutParams(layoutParams);
             });

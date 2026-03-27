@@ -2,83 +2,69 @@ package com.gyf.immersionbar.sample.activity;
 
 import androidx.fragment.app.FragmentTransaction;
 import android.view.View;
-import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 
 import com.gyf.immersionbar.ImmersionBar;
 import com.gyf.immersionbar.sample.R;
+import com.gyf.immersionbar.sample.databinding.ActivityFragmentTwoBinding;
 import com.gyf.immersionbar.sample.fragment.four.CategoryFourFragment;
 import com.gyf.immersionbar.sample.fragment.four.HomeFourFragment;
 import com.gyf.immersionbar.sample.fragment.four.MineFourFragment;
 import com.gyf.immersionbar.sample.fragment.four.ServiceFourFragment;
 
-import butterknife.BindView;
-
 /**
  * @author geyifeng
  * @date 2017/7/20
  */
-public class FragmentFourActivity extends BaseActivity implements View.OnClickListener {
+public class FragmentFourActivity extends BaseActivity<ActivityFragmentTwoBinding> implements View.OnClickListener {
 
-    @BindView(R.id.content)
-    FrameLayout content;
-    @BindView(R.id.ll_home)
-    LinearLayout llHome;
-    @BindView(R.id.ll_category)
-    LinearLayout llCategory;
-    @BindView(R.id.ll_service)
-    LinearLayout llService;
-    @BindView(R.id.ll_mine)
-    LinearLayout llMine;
     private HomeFourFragment homeFourFragment;
     private CategoryFourFragment categoryFourFragment;
     private ServiceFourFragment serviceFourFragment;
     private MineFourFragment mineFourFragment;
 
-    @Override
     protected int getLayoutId() {
         return R.layout.activity_fragment_two;
     }
 
     @Override
+    protected ActivityFragmentTwoBinding createViewBinding() {
+        return ActivityFragmentTwoBinding.inflate(getLayoutInflater());
+    }
+
+    @Override
     protected void initView() {
         selectedFragment(0);
-        tabSelected(llHome);
+        tabSelected(mBinding.tabBottomContainer.llHome);
     }
 
     @Override
     protected void setListener() {
-        llHome.setOnClickListener(this);
-        llCategory.setOnClickListener(this);
-        llService.setOnClickListener(this);
-        llMine.setOnClickListener(this);
+        mBinding.tabBottomContainer.llHome.setOnClickListener(this);
+        mBinding.tabBottomContainer.llCategory.setOnClickListener(this);
+        mBinding.tabBottomContainer.llService.setOnClickListener(this);
+        mBinding.tabBottomContainer.llMine.setOnClickListener(this);
     }
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.ll_home:
-                selectedFragment(0);
-                tabSelected(llHome);
-                ImmersionBar.with(this).keyboardEnable(false).statusBarDarkFont(false).navigationBarColor(R.color.colorPrimary).init();
-                break;
-            case R.id.ll_category:
-                selectedFragment(1);
-                tabSelected(llCategory);
-                ImmersionBar.with(this).keyboardEnable(true).statusBarDarkFont(true, 0.2f).navigationBarColor(R.color.btn1).init();
-                break;
-            case R.id.ll_service:
-                selectedFragment(2);
-                tabSelected(llService);
-                ImmersionBar.with(this).keyboardEnable(false).statusBarDarkFont(true, 0.2f).navigationBarColor(R.color.btn2).init();
-                break;
-            case R.id.ll_mine:
-                selectedFragment(3);
-                tabSelected(llMine);
-                ImmersionBar.with(this).keyboardEnable(true).statusBarDarkFont(false).navigationBarColor(R.color.btn7).init();
-                break;
-            default:
-                break;
+        int viewId = v.getId();
+        if (viewId == R.id.ll_home) {
+            selectedFragment(0);
+            tabSelected(mBinding.tabBottomContainer.llHome);
+            ImmersionBar.with(this).keyboardEnable(false).statusBarDarkFont(false).navigationBarColor(R.color.colorPrimary).init();
+        } else if (viewId == R.id.ll_category) {
+            selectedFragment(1);
+            tabSelected(mBinding.tabBottomContainer.llCategory);
+            ImmersionBar.with(this).keyboardEnable(true).statusBarDarkFont(true, 0.2f).navigationBarColor(R.color.btn1).init();
+        } else if (viewId == R.id.ll_service) {
+            selectedFragment(2);
+            tabSelected(mBinding.tabBottomContainer.llService);
+            ImmersionBar.with(this).keyboardEnable(false).statusBarDarkFont(true, 0.2f).navigationBarColor(R.color.btn2).init();
+        } else if (viewId == R.id.ll_mine) {
+            selectedFragment(3);
+            tabSelected(mBinding.tabBottomContainer.llMine);
+            ImmersionBar.with(this).keyboardEnable(true).statusBarDarkFont(false).navigationBarColor(R.color.btn7).init();
         }
     }
 
@@ -140,10 +126,10 @@ public class FragmentFourActivity extends BaseActivity implements View.OnClickLi
     }
 
     private void tabSelected(LinearLayout linearLayout) {
-        llHome.setSelected(false);
-        llCategory.setSelected(false);
-        llService.setSelected(false);
-        llMine.setSelected(false);
+        mBinding.tabBottomContainer.llHome.setSelected(false);
+        mBinding.tabBottomContainer.llCategory.setSelected(false);
+        mBinding.tabBottomContainer.llService.setSelected(false);
+        mBinding.tabBottomContainer.llMine.setSelected(false);
         linearLayout.setSelected(true);
     }
 }

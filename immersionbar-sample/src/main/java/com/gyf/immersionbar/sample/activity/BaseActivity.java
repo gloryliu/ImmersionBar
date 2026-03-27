@@ -8,8 +8,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.gyf.immersionbar.ImmersionBar;
 import com.gyf.immersionbar.sample.AppManager;
 import com.gyf.immersionbar.sample.R;
-
-import butterknife.ButterKnife;
+import androidx.viewbinding.ViewBinding;
 
 /**
  * Activity基类
@@ -17,20 +16,22 @@ import butterknife.ButterKnife;
  * @author geyifeng
  * @date 2017/5/9
  */
-public abstract class BaseActivity extends AppCompatActivity {
+public abstract class BaseActivity<VB extends ViewBinding> extends AppCompatActivity {
 
     protected String mTag = this.getClass().getSimpleName();
 
     protected Activity mActivity;
+    protected VB mBinding;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         AppManager.getInstance().addActivity(this);
         mActivity = this;
-        setContentView(getLayoutId());
-        //绑定控件
-        ButterKnife.bind(this);
+        mBinding = createViewBinding();
+        if (mBinding != null) {
+            setContentView(mBinding.getRoot());
+        }
         //初始化沉浸式
         initImmersionBar();
         //初始化数据
@@ -52,7 +53,7 @@ public abstract class BaseActivity extends AppCompatActivity {
      *
      * @return the layout id
      */
-    protected abstract int getLayoutId();
+    protected abstract VB createViewBinding();
 
     /**
      * 初始化沉浸式

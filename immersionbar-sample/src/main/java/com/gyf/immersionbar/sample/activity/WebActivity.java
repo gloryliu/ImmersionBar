@@ -2,29 +2,16 @@ package com.gyf.immersionbar.sample.activity;
 
 import android.view.ViewGroup;
 import android.view.ViewParent;
-import android.webkit.WebView;
-import android.widget.LinearLayout;
 
 import com.gyf.immersionbar.ImmersionBar;
 import com.gyf.immersionbar.sample.R;
-
-import butterknife.BindView;
+import com.gyf.immersionbar.sample.databinding.ActivityWebBinding;
 
 /**
  * @author geyifeng
  * @date 2017/6/19
  */
-public class WebActivity extends BaseActivity {
-    @BindView(R.id.web)
-    WebView mWebView;
-    @BindView(R.id.line)
-    LinearLayout layout;
-
-
-    @Override
-    protected int getLayoutId() {
-        return R.layout.activity_web;
-    }
+public class WebActivity extends BaseActivity<ActivityWebBinding> {
 
     @Override
     protected void initImmersionBar() {
@@ -37,28 +24,32 @@ public class WebActivity extends BaseActivity {
 
     @Override
     protected void initView() {
-        mWebView.loadUrl("file:///android_asset/input_webview.html");
+        mBinding.web.loadUrl("file:///android_asset/input_webview.html");
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
         try {
-            if (mWebView != null) {
-                ViewParent parent = mWebView.getParent();
+            if (mBinding.web != null) {
+                ViewParent parent = mBinding.web.getParent();
                 if (parent != null) {
-                    ((ViewGroup) parent).removeView(mWebView);
+                    ((ViewGroup) parent).removeView(mBinding.web);
                 }
-                mWebView.stopLoading();
+                mBinding.web.stopLoading();
                 // 退出时调用此方法，移除绑定的服务，否则某些特定系统会报错
-                mWebView.getSettings().setJavaScriptEnabled(false);
-                mWebView.clearHistory();
-                mWebView.clearView();
-                mWebView.removeAllViews();
-                mWebView.destroy();
-                mWebView = null;
+                mBinding.web.getSettings().setJavaScriptEnabled(false);
+                mBinding.web.clearHistory();
+                mBinding.web.clearView();
+                mBinding.web.removeAllViews();
+                mBinding.web.destroy();
             }
         } catch (Exception ignored) {
         }
+    }
+
+    @Override
+    protected ActivityWebBinding createViewBinding() {
+        return ActivityWebBinding.inflate(getLayoutInflater());
     }
 }

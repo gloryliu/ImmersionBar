@@ -4,12 +4,13 @@ import android.os.Bundle;
 
 import com.gyf.immersionbar.ImmersionBar;
 import com.gyf.immersionbar.sample.R;
+import com.gyf.immersionbar.sample.databinding.FragmentTwoCategoryBinding;
 
 /**
  * @author geyifeng
  * @date 2017/7/20
  */
-public class CategoryFiveFragment extends BaseFiveFragment {
+public class CategoryFiveFragment extends BaseFiveFragment<FragmentTwoCategoryBinding> {
 
     public static CategoryFiveFragment newInstance() {
         Bundle args = new Bundle();
@@ -19,13 +20,13 @@ public class CategoryFiveFragment extends BaseFiveFragment {
     }
 
     @Override
-    protected int getLayoutId() {
-        return R.layout.fragment_two_category;
-    }
-
-    @Override
     public void initImmersionBar() {
         super.initImmersionBar();
         ImmersionBar.with(this).navigationBarColor(R.color.btn1).init();
+    }
+
+    @Override
+    protected FragmentTwoCategoryBinding createViewBinding() {
+        return FragmentTwoCategoryBinding.inflate(getLayoutInflater());
     }
 }

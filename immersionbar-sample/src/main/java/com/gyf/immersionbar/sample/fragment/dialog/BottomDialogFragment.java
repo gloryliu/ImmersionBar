@@ -6,6 +6,7 @@ import android.view.ViewGroup;
 
 import com.gyf.immersionbar.ImmersionBar;
 import com.gyf.immersionbar.sample.R;
+import com.gyf.immersionbar.sample.databinding.DialogBinding;
 
 /**
  * 底部DialogFragment
@@ -13,7 +14,7 @@ import com.gyf.immersionbar.sample.R;
  * @author geyifeng
  * @date 2017/7/28
  */
-public class BottomDialogFragment extends BaseDialogFragment {
+public class BottomDialogFragment extends BaseDialogFragment<DialogBinding> {
 
     @Override
     public void onStart() {
@@ -21,11 +22,6 @@ public class BottomDialogFragment extends BaseDialogFragment {
         mWindow.setGravity(Gravity.BOTTOM);
         mWindow.setWindowAnimations(R.style.BottomAnimation);
         mWindow.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, mWidthAndHeight[1] / 2);
-    }
-
-    @Override
-    protected int setLayoutId() {
-        return R.layout.dialog;
     }
 
     @Override
@@ -38,5 +34,10 @@ public class BottomDialogFragment extends BaseDialogFragment {
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
         mWindow.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, mWidthAndHeight[1] / 2);
+    }
+
+    @Override
+    protected DialogBinding createViewBinding() {
+        return DialogBinding.inflate(getLayoutInflater());
     }
 }

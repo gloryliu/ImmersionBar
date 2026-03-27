@@ -1,14 +1,12 @@
 package com.gyf.immersionbar.sample.fragment.dialog;
 
 import android.content.res.Configuration;
-import androidx.appcompat.widget.Toolbar;
 import android.view.Gravity;
 import android.view.ViewGroup;
 
 import com.gyf.immersionbar.ImmersionBar;
 import com.gyf.immersionbar.sample.R;
-
-import butterknife.BindView;
+import com.gyf.immersionbar.sample.databinding.DialogBinding;
 
 /**
  * 顶部DialogFragment
@@ -16,10 +14,7 @@ import butterknife.BindView;
  * @author geyifeng
  * @date 2017/7/28
  */
-public class TopDialogFragment extends BaseDialogFragment {
-
-    @BindView(R.id.toolbar)
-    Toolbar toolbar;
+public class TopDialogFragment extends BaseDialogFragment<DialogBinding> {
 
     @Override
     public void onStart() {
@@ -30,15 +25,10 @@ public class TopDialogFragment extends BaseDialogFragment {
     }
 
     @Override
-    protected int setLayoutId() {
-        return R.layout.dialog;
-    }
-
-    @Override
     protected void initImmersionBar() {
         super.initImmersionBar();
         ImmersionBar.with(this)
-                .titleBar(toolbar)
+                .titleBar(mBinding.toolbar)
                 .navigationBarColor(R.color.btn4)
                 .navigationBarWithKitkatEnable(getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE)
                 .init();
@@ -51,5 +41,10 @@ public class TopDialogFragment extends BaseDialogFragment {
         ImmersionBar.with(this)
                 .navigationBarWithKitkatEnable(newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE)
                 .init();
+    }
+
+    @Override
+    protected DialogBinding createViewBinding() {
+        return DialogBinding.inflate(getLayoutInflater());
     }
 }
